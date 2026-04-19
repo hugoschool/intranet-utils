@@ -2,6 +2,7 @@ from fastapi import FastAPI, Response, status, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pathlib import Path
+from constants import IMAGES_FOLDER, JSON_FILE
 import os
 import json
 
@@ -19,9 +20,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-IMAGES_FOLDER = "images"
-JSON_FILE = ".groups.json"
 
 class Module(BaseModel):
     code: str
