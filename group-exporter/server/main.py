@@ -1,6 +1,8 @@
-from fastapi import FastAPI, Response, status
+from fastapi import FastAPI, Response, status, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from pathlib import Path
+import os
 import json
 
 app = FastAPI()
@@ -18,6 +20,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+IMAGES_FOLDER = "images"
 JSON_FILE = ".groups.json"
 
 class Module(BaseModel):
@@ -62,3 +65,21 @@ def group_page(group: GroupPage, response: Response):
 @app.get("/groups")
 def groups():
     return json.loads(get_json_file_contents())
+
+@app.post("/image")
+def upload_image(file: UploadFile, response: Response):
+    Path(IMAGES_FOLDER).mkdir(parents=True, exist_ok=True)
+
+    if file.filename in os.listdir(IMAGES_FOLDER):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return {"status": "Already exists"}
+
+    with open(f"{IMAGES_FOLDER}/{file.filename}", "wb+") as f:
+        f.write(file.file.read())
+        return {"status": "Success"}
+
+@app.get("/images")
+def list_images():
+    if not os.path.exists(IMAGES_FOLDER):
+        return []
+    return os.listdir(IMAGES_FOLDER)
