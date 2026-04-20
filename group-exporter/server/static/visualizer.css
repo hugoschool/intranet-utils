@@ -1,0 +1,43 @@
+body {
+    font-family: "HelveticaNeue", Arial, sans-serif;
+    font-size: 12pt;
+}
+.title {
+    color: #0091d3;
+}
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+.groups {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    gap: 8px;
+    padding: 0;
+    margin: 0;
+}
+.group {
+    width: 100%;
+}
+.group .repository {
+    font-size: 10pt;
+    margin-bottom: 1em;
+}
+.members {
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+}
+.member {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 110px;
+    gap: 10px;
+    font-size: 10pt;
+}
+.member img {
+    width: 60px;
+}

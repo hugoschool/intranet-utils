@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ project }} | group-exporter</title>
+    <link href="{{ url_for('static', path='/visualizer.css') }}" rel="stylesheet">
+</head>
+<body>
+    <ul class="groups">
+        {% for group in groups %}
+            <li class="group">
+                <h3 class="title">{{ group.title }}</h3>
+                <div class="container">
+                    <div class="repository">
+                        <label>Repository :</label>
+                        <a href="{{ group.repository }}">{{ group.repository }}</a>
+                    </div>
+                    <ul class="members">
+                        <li class="member">
+                            <img src="{{ url_for('get_image', login=group.master.login) }}" />
+                            <span class="login">{{ group.master.login.split("@epitech.eu")[0] }}</span>
+                        </li>
+                        {% for member in group.members %}
+                            <li class="member">
+                                <img src="{{ url_for('get_image', login=member.login) }}" />
+                                <span class="login">{{ member.login.split("@epitech.eu")[0] }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

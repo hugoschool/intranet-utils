@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ module }} | group-exporter</title>
+</head>
+<body>
+    <ul>
+        {% for project in projects %}
+            <li>
+                <a href="{{ url_for('project_root', module=module, project=project) }}">
+                    {{ project }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

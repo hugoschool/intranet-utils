@@ -597,12 +597,14 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
+    { name = "jinja2" },
     { name = "requests" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = ">=0.136.0" },
+    { name = "jinja2", specifier = ">=3.1.6" },
     { name = "requests", specifier = ">=2.33.1" },
 ]
 
