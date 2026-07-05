@@ -22,6 +22,9 @@ fastapi dev
 
 `extension`:
 
+> [!WARNING]
+> The extension requires the Intranet to be set in English language.
+
 ```sh
 make
 ```
