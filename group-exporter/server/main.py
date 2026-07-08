@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Response, status, File, UploadFile
+from fastapi import FastAPI, Request, Response, status, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -66,7 +66,7 @@ def group_page(group: GroupPage, response: Response):
                 response.status_code = status.HTTP_400_BAD_REQUEST
                 return {"status": "Already exists"}
             content[group.module.code][group.project.name] = group.content
-        except Exception as e:
+        except Exception:
             content[group.module.code] = {group.project.name: group.content}
 
         write_json(content)
