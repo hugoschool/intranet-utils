@@ -10,17 +10,24 @@ BASE_URL = "https://innovation.epitech.eu/api/public/projects"
 
 # fmt: off
 DEFAULT_CITIES = [
+    "BE/BRU",   # Bruxelles
+    "DE/BER",   # Berlin
     "ES/BAR",   # Barcelone
     "FR/BDX",   # Bordeaux
     "FR/LIL",   # Lille
     "FR/LYN",   # Lyon
     "FR/MAR",   # Marseille
+    "FR/MLH",   # Mulhouse
     "FR/MLN",   # Moulins
+    "FR/MPL",   # Montpellier
+    "FR/NAN",   # Nantes
     "FR/NCE",   # Nice
     "FR/NCY",   # Nancy
     "FR/PAR",   # Paris
     "FR/REN",   # Rennes
+    "FR/RUN",   # La Réunion
     "FR/STG",   # Strasbourg
+    "FR/TLS",   # Toulouse
 ]
 # fmt: on
 
