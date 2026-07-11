@@ -115,7 +115,7 @@ def main() -> None:
         print(f"Exported to {args.output}")
         if i < len(cities) - 1:
             # Prevent ratelimit
-            time.sleep(2)
+            time.sleep(4)
 
 
 if __name__ == "__main__":
