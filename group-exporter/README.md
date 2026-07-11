@@ -2,7 +2,7 @@
 
 Export all of your projects and groups from the Epitech Intranet.
 
-# Setup
+## Setup
 
 `server`:
 
@@ -20,13 +20,13 @@ source .venv/bin/activate
 fastapi dev
 ```
 
-`extension`:
+UserScript:
 
 > [!WARNING]
-> The extension requires the Intranet to be set in English language.
+> This requires the Intranet to be set in English language.
 
-```sh
-make
-```
+> [!NOTE]
+> If you have modified the server port, you might need to modify the `SERVER_URL` if needed
 
-> Modify the `SERVER_URL` if needed
+Install [Tampermonkey](https://tampermonkey.net) and then import the `group-exporter.user.js` script.
+
