@@ -16,6 +16,7 @@ DEFAULT_CITIES = [
     "FR/BDX",   # Bordeaux
     "FR/LIL",   # Lille
     "FR/LYN",   # Lyon
+    "FR/MAD",   # Madrid (for some reason it is listed as FR/)
     "FR/MAR",   # Marseille
     "FR/MLH",   # Mulhouse
     "FR/MLN",   # Moulins
