@@ -51,6 +51,23 @@ def download_programs(args: Namespace) -> None:
         print(f"Successfully wrote to {args.output}")
 
 
+def get_all_destinations(args: Namespace) -> None:
+    with open(args.input, "r") as f:
+        data = json.loads(f.read())
+
+        destinations: set[str] = set()
+
+        for program in data:
+            for location in program["locations"]:
+                destinations.add(location["label"])
+
+        destinations = list(destinations)
+        destinations.sort()
+
+        for destination in destinations:
+            print(destination)
+
+
 def main() -> None:
     args = ArgumentParser()
     subparsers = args.add_subparsers(dest="subparser_name")
@@ -65,12 +82,25 @@ def main() -> None:
         required=False,
     )
 
+    get_all_destinations_args = subparsers.add_parser("get-all-destinations")
+    _ = get_all_destinations_args.add_argument(
+        "-i",
+        "--input",
+        help="Input file",
+        type=str,
+        default="programs.json",
+        required=False,
+    )
+
     args = args.parse_args()
 
     if args.subparser_name is None:
         raise ValueError("Missing subcommand")
 
-    commands = {"download": download_programs}
+    commands = {
+        "download": download_programs,
+        "get-all-destinations": get_all_destinations,
+    }
 
     commands[args.subparser_name](args)
 
