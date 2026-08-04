@@ -1,8 +1,16 @@
 from argparse import ArgumentParser, Namespace
+from datetime import datetime
 from requests import PreparedRequest, Session
+from typing import Any
 import json
 
 BASE_URL = "https://epitech.campuscommunity.app"
+FRONTEND_BASE_URL = "https://epitech.globalcampus.app"
+
+
+GPA_TAG = "GPA Requirement"
+GPA_SPOTS = "Available Spots"
+GPA_DUAL_DEGREE = "Dual degree/certificate proposed"
 
 
 def download_programs(args: Namespace) -> None:
@@ -96,6 +104,41 @@ class Destinations:
             required=False,
         )
         _ = school_args.add_argument(
+            "--days-amount",
+            help="List only days amount",
+            action="store_true",
+            default=False,
+            required=False,
+        )
+        _ = school_args.add_argument(
+            "--gpa",
+            help="List only GPA requirements",
+            action="store_true",
+            default=False,
+            required=False,
+        )
+        _ = school_args.add_argument(
+            "--spots",
+            help="List only spots amount",
+            action="store_true",
+            default=False,
+            required=False,
+        )
+        _ = school_args.add_argument(
+            "--dual-degree",
+            help="List only dual degree",
+            action="store_true",
+            default=False,
+            required=False,
+        )
+        _ = school_args.add_argument(
+            "--link",
+            help="List only links",
+            action="store_true",
+            default=False,
+            required=False,
+        )
+        _ = school_args.add_argument(
             "--country",
             help="Name of the country",
             type=str,
@@ -118,6 +161,27 @@ class Destinations:
     @staticmethod
     def correct_price(price: float) -> float:
         return price / 100
+
+    @staticmethod
+    def amount_days_between(startDate: str, endDate: str) -> int:
+        startDate = startDate.split("T")[0]
+        endDate = endDate.split("T")[0]
+
+        startDate = datetime.strptime(startDate, "%Y-%m-%d")
+        endDate = datetime.strptime(endDate, "%Y-%m-%d")
+
+        return (endDate - startDate).days
+
+    @staticmethod
+    def get_from_tags(tags: list, name: str) -> Any | None:
+        for tag in tags:
+            if tag["parent"]["name"] == name:
+                try:
+                    return tag["name"]
+                except ValueError:
+                    return None
+
+        return None
 
     def list_all_countries(self) -> None:
         countries: set[str] = set()
@@ -147,13 +211,37 @@ class Destinations:
             if country in locations:
                 schools.append(program)
 
-        for school in schools:
+        for i, school in enumerate(schools):
+            name = school["name"]
+            price = self.correct_price(school["priceCents"])
+            days_amount = self.amount_days_between(
+                school["startDate"], school["endDate"]
+            )
+            link = f"{FRONTEND_BASE_URL}/programs/{school['id']}"
+            gpa = self.get_from_tags(school["tags"], GPA_TAG)
+            spots = self.get_from_tags(school["tags"], GPA_SPOTS)
+            dual_degree = self.get_from_tags(school["tags"], GPA_DUAL_DEGREE)
+
             if self.args.name:
-                print(school["name"])
+                print(name)
             elif self.args.price:
-                print(self.correct_price(school["priceCents"]))
+                print(price)
+            elif self.args.days_amount:
+                print(days_amount)
+            elif self.args.gpa:
+                print(gpa)
+            elif self.args.spots:
+                print(spots)
+            elif self.args.dual_degree:
+                print(dual_degree)
+            elif self.args.link:
+                print(link)
             else:
-                print(f"{school['name']},{self.correct_price(school['priceCents'])}")
+                if i == 0:
+                    print("name,price,days_amount,gpa,spots,dual_degree,link")
+                print(
+                    f"{name},{price},{days_amount},{gpa},{spots},{dual_degree},{link}"
+                )
 
 
 def main() -> None:
