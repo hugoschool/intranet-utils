@@ -138,6 +138,14 @@ class Destinations:
             default=False,
             required=False,
         )
+
+        _ = school_args.add_argument(
+            "--delimiter",
+            help="CSV Delimiter",
+            type=str,
+            default=";",
+            required=False,
+        )
         _ = school_args.add_argument(
             "--country",
             help="Name of the country",
@@ -182,6 +190,13 @@ class Destinations:
                     return None
 
         return None
+
+    def print(self, array) -> None:
+        for i, item in enumerate(array):
+            print(item, end="")
+            if i < len(array) - 1:
+                print(self.args.delimiter, end="")
+        print()
 
     def list_all_countries(self) -> None:
         countries: set[str] = set()
@@ -238,10 +253,18 @@ class Destinations:
                 print(link)
             else:
                 if i == 0:
-                    print("name,price,days_amount,gpa,spots,dual_degree,link")
-                print(
-                    f"{name},{price},{days_amount},{gpa},{spots},{dual_degree},{link}"
-                )
+                    self.print(
+                        [
+                            "name",
+                            "price",
+                            "days_amount",
+                            "gpa",
+                            "spots",
+                            "dual_degree",
+                            "link",
+                        ]
+                    )
+                self.print([name, price, days_amount, gpa, spots, dual_degree, link])
 
 
 def main() -> None:
