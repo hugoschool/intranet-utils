@@ -8,9 +8,9 @@ BASE_URL = "https://epitech.campuscommunity.app"
 FRONTEND_BASE_URL = "https://epitech.globalcampus.app"
 
 
-GPA_TAG = "GPA Requirement"
-GPA_SPOTS = "Available Spots"
-GPA_DUAL_DEGREE = "Dual degree/certificate proposed"
+TAG_GPA = "GPA Requirement"
+TAG_SPOTS = "Available Spots"
+TAG_DUAL_DEGREE = "Dual degree/certificate proposed"
 
 
 def download_programs(args: Namespace) -> None:
@@ -212,9 +212,9 @@ class Destinations:
             info["days_amount"] = self.amount_days_between(
                 school["startDate"], school["endDate"]
             )
-            info["gpa"] = self.get_from_tags(school["tags"], GPA_TAG)
-            info["spots"] = self.get_from_tags(school["tags"], GPA_SPOTS)
-            info["dual_degree"] = self.get_from_tags(school["tags"], GPA_DUAL_DEGREE)
+            info["gpa"] = self.get_from_tags(school["tags"], TAG_GPA)
+            info["spots"] = self.get_from_tags(school["tags"], TAG_SPOTS)
+            info["dual_degree"] = self.get_from_tags(school["tags"], TAG_DUAL_DEGREE)
             info["link"] = f"{FRONTEND_BASE_URL}/programs/{school['id']}"
 
             if i == 0:
