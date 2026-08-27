@@ -111,10 +111,6 @@ class Destinations:
             required=False,
         )
 
-    def verify_country(self):
-        if "country" not in self.args or self.args.country == "":
-            raise ValueError("Missing destination country")
-
     @staticmethod
     def replace_country_aliases(country: str) -> str:
         aliases = {"UK": "United Kingdom", "USA": "United States of America"}
@@ -172,8 +168,9 @@ class Destinations:
             print(country)
 
     def school(self) -> None:
-        self.verify_country()
-        country = self.replace_country_aliases(self.args.country)
+        selected_country = ""
+        if self.args.country is not None:
+            selected_country = self.replace_country_aliases(self.args.country)
 
         schools = []
 
@@ -183,7 +180,7 @@ class Destinations:
             for location in program["locations"]:
                 locations.add(location["label"])
 
-            if country in locations:
+            if selected_country == "" or selected_country in locations:
                 schools.append(program)
 
         info = {
