@@ -129,13 +129,16 @@ class Destinations:
 
     @staticmethod
     def amount_days_between(startDate: str, endDate: str) -> int:
-        startDate = startDate.split("T")[0]
-        endDate = endDate.split("T")[0]
+        try:
+            startDate = startDate.split("T")[0]
+            endDate = endDate.split("T")[0]
 
-        startDate = datetime.strptime(startDate, "%Y-%m-%d")
-        endDate = datetime.strptime(endDate, "%Y-%m-%d")
+            startDate = datetime.strptime(startDate, "%Y-%m-%d")
+            endDate = datetime.strptime(endDate, "%Y-%m-%d")
 
-        return (endDate - startDate).days
+            return (endDate - startDate).days
+        except:  # noqa: E722
+            return -1
 
     @staticmethod
     def get_from_tags(tags: list, name: str) -> Any | None:
