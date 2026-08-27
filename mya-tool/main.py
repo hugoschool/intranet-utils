@@ -90,52 +90,9 @@ class Destinations:
         school_args = subparsers.add_parser("school")
 
         _ = school_args.add_argument(
-            "--name",
-            help="List only names",
-            action="store_true",
-            default=False,
-            required=False,
-        )
-        _ = school_args.add_argument(
-            "--price",
-            help="List only prices",
-            action="store_true",
-            default=False,
-            required=False,
-        )
-        _ = school_args.add_argument(
-            "--days-amount",
-            help="List only days amount",
-            action="store_true",
-            default=False,
-            required=False,
-        )
-        _ = school_args.add_argument(
-            "--gpa",
-            help="List only GPA requirements",
-            action="store_true",
-            default=False,
-            required=False,
-        )
-        _ = school_args.add_argument(
-            "--spots",
-            help="List only spots amount",
-            action="store_true",
-            default=False,
-            required=False,
-        )
-        _ = school_args.add_argument(
-            "--dual-degree",
-            help="List only dual degree",
-            action="store_true",
-            default=False,
-            required=False,
-        )
-        _ = school_args.add_argument(
-            "--link",
-            help="List only links",
-            action="store_true",
-            default=False,
+            "--filter",
+            help="Filter out only the columns that you wish to have in your final CSV. Seperated by comma (,) (by default: all columns)",
+            type=str,
             required=False,
         )
 
@@ -226,45 +183,49 @@ class Destinations:
             if country in locations:
                 schools.append(program)
 
+        info = {
+            "name": None,
+            "price": None,
+            "days_amount": None,
+            "gpa": None,
+            "spots": None,
+            "dual_degree": None,
+            "link": None,
+        }
+
+        columns = []
+
+        if self.args.filter is not None:
+            columns = self.args.filter.split(",")
+
+            for column in columns:
+                if column not in info:
+                    columns.remove(column)
+
+        if len(columns) == 0:
+            for elem in info:
+                columns.append(elem)
+
         for i, school in enumerate(schools):
-            name = school["name"]
-            price = self.correct_price(school["priceCents"])
-            days_amount = self.amount_days_between(
+            info["name"] = school["name"]
+            info["price"] = self.correct_price(school["priceCents"])
+            info["days_amount"] = self.amount_days_between(
                 school["startDate"], school["endDate"]
             )
-            link = f"{FRONTEND_BASE_URL}/programs/{school['id']}"
-            gpa = self.get_from_tags(school["tags"], GPA_TAG)
-            spots = self.get_from_tags(school["tags"], GPA_SPOTS)
-            dual_degree = self.get_from_tags(school["tags"], GPA_DUAL_DEGREE)
+            info["gpa"] = self.get_from_tags(school["tags"], GPA_TAG)
+            info["spots"] = self.get_from_tags(school["tags"], GPA_SPOTS)
+            info["dual_degree"] = self.get_from_tags(school["tags"], GPA_DUAL_DEGREE)
+            info["link"] = f"{FRONTEND_BASE_URL}/programs/{school['id']}"
 
-            if self.args.name:
-                print(name)
-            elif self.args.price:
-                print(price)
-            elif self.args.days_amount:
-                print(days_amount)
-            elif self.args.gpa:
-                print(gpa)
-            elif self.args.spots:
-                print(spots)
-            elif self.args.dual_degree:
-                print(dual_degree)
-            elif self.args.link:
-                print(link)
-            else:
-                if i == 0:
-                    self.print(
-                        [
-                            "name",
-                            "price",
-                            "days_amount",
-                            "gpa",
-                            "spots",
-                            "dual_degree",
-                            "link",
-                        ]
-                    )
-                self.print([name, price, days_amount, gpa, spots, dual_degree, link])
+            if i == 0:
+                self.print(columns)
+
+            print_values = []
+
+            for column in columns:
+                print_values.append(info[column])
+
+            self.print(print_values)
 
 
 def main() -> None:
