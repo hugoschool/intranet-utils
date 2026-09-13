@@ -89,7 +89,14 @@ def main() -> None:
             continue
 
         with open(f"results/{info['name']}.json", "w") as f:
-            f.write(json.dumps(info["groups"]))
+            f.write(
+                json.dumps(
+                    {
+                        "meta": {"name": info["name"], "unitCode": project_id[0]},
+                        "groups": info["groups"],
+                    }
+                )
+            )
 
 
 main()
