@@ -1,2 +1,2 @@
 IMAGES_FOLDER = "images"
-JSON_FILE = "../../.groups.json"
+JSON_FILE = "groups.json"
