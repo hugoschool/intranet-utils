@@ -4,9 +4,7 @@ from requests import PreparedRequest, Session
 from typing import Any
 import json
 
-BASE_URL = "https://epitech.campuscommunity.app"
-FRONTEND_BASE_URL = "https://epitech.globalcampus.app"
-
+BASE_URL = "https://mya.epitech.eu"
 
 TAG_GPA = "GPA Requirement"
 TAG_SPOTS = "Available Spots"
@@ -15,44 +13,30 @@ TAG_DUAL_DEGREE = "Dual degree/certificate proposed"
 
 def download_programs(args: Namespace) -> None:
     programs = []
-    currentItems: int = 0
-    maxItems: int = -1
+    url = f"{BASE_URL}/api/universities"
 
-    url = f"{BASE_URL}/api/v2/public/programs"
-    page: int = 1
-    itemsPerPage: int = 50  # Max amount of programs available on the site
+    req = PreparedRequest()
+    req.prepare_url(url, None)
+    req.prepare_method("GET")
+    session = Session()
+    res = session.send(req)
+    if not res.ok:
+        res.raise_for_status()
 
-    # We need to paginate all of them
-    while currentItems < maxItems or maxItems == -1:
-        params = {
-            "typeId": "16,17,3",  # No idea what this is
-            "page": page,
-            "limit": itemsPerPage,
-        }
-
+    print("Loading request")
+    file = res.json()
+    for uni in file:
+        current_id = uni["id"]
+        url = f"{BASE_URL}/api/universities/{current_id}"
         req = PreparedRequest()
-        req.prepare_url(url, params)
+        req.prepare_url(url, None)
         req.prepare_method("GET")
-
         session = Session()
         res = session.send(req)
-
         if not res.ok:
             res.raise_for_status()
 
-        print(f"Loaded page {page}")
-
-        json_data = res.json()
-        data = json_data["data"]
-
-        if maxItems == -1:
-            maxItems = data["meta"]["totalItems"]
-
-        programs.extend(data["programs"])
-
-        currentItems += itemsPerPage
-
-        page += 1
+        programs.append(res.json())
 
     with open(args.output, "w+") as f:
         f.write(json.dumps(programs, indent=4))
@@ -158,8 +142,7 @@ class Destinations:
         countries: set[str] = set()
 
         for program in self.content:
-            for location in program["locations"]:
-                countries.add(location["label"])
+            countries.add(program["country"])
 
         countries = list(countries)
         countries.sort()
@@ -177,8 +160,7 @@ class Destinations:
         for program in self.content:
             locations = set()
 
-            for location in program["locations"]:
-                locations.add(location["label"])
+            locations.add(program["country"])
 
             if selected_country == "" or selected_country in locations:
                 schools.append(program)
@@ -186,7 +168,7 @@ class Destinations:
         info = {
             "name": None,
             "price": None,
-            "days_amount": None,
+            "duration": None,
             "gpa": None,
             "spots": None,
             "dual_degree": None,
@@ -208,14 +190,12 @@ class Destinations:
 
         for i, school in enumerate(schools):
             info["name"] = school["name"]
-            info["price"] = self.correct_price(school["priceCents"])
-            info["days_amount"] = self.amount_days_between(
-                school["startDate"], school["endDate"]
-            )
-            info["gpa"] = self.get_from_tags(school["tags"], TAG_GPA)
-            info["spots"] = self.get_from_tags(school["tags"], TAG_SPOTS)
-            info["dual_degree"] = self.get_from_tags(school["tags"], TAG_DUAL_DEGREE)
-            info["link"] = f"{FRONTEND_BASE_URL}/programs/{school['id']}"
+            info["price"] = school["extracharge"]
+            info["duration"] = school["semester"]
+            info["gpa"] = school["gpa"]
+            info["spots"] = school["spots"]
+            info["dual_degree"] = school["diploma"]
+            info["link"] = f"{BASE_URL}/university/{school['id']}"
 
             if i == 0:
                 self.print(columns)
